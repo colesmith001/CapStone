@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from .models import Products
 
 # Create your views here.
@@ -19,3 +19,10 @@ def product_list(request):
     "products": products,
     "query": query,
 })
+
+
+def product_detail(request, product_id):
+  product = get_object_or_404(Products, pk=product_id, is_available=True)
+  return render(request, "products/product_detail.html", {
+    "product": product,
+  })

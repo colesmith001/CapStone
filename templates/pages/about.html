@@ -5,19 +5,33 @@ About us
 {% load static %}
 
 {% block content %}
-<div style="font-family: Georgia, 'Palatino Linotype', serif;">
-<h1>About us</h1>
-<p>Welcome to our Stirlings Oasis</p>
-<p>Welcome to our corner of San Francisco! Founded by Eloise Raymond and co-owned by Cole Smith, our cafe was born out of a college hospitality assignment that sparked a lifelong dream. What started as a classroom project blossomed into a shared vision: to create a warm, welcoming space where everyone feels at home, safe, and valued.
+<section class="about-page">
+  <header class="text-center mb-4 mb-lg-5">
+    <h1 class="display-4">About us</h1>
+    <p class="lead text-secondary mb-0">Welcome to our Stirlings Oasis</p>
+  </header>
 
-As a proud LGBTQ+-friendly establishment, community is at the heart of everything we do. We believe a great cafe is more than just a place to grab a bite—it is a gathering space. That is why our walls feature rotating works by talented local artists, celebrating the incredible creativity of the Bay Area.
+  <div class="row align-items-center g-4 g-lg-5">
+    <div class="col-12 col-lg-6 order-2 order-lg-1">
+      <div class="fs-5 lh-lg">
+        <p>Welcome to our corner of San Francisco! Founded by Eloise Raymond and co-owned by Cole Smith, our cafe was born out of a college hospitality assignment that sparked a lifelong dream. What started as a classroom project blossomed into a shared vision: to create a warm, welcoming space where everyone feels at home, safe, and valued.</p>
 
-Whether you are stopping by for a morning pick-me-up, settling in with a book, or admiring the local artwork, we promise you delicious food, friendly service, and a cozy atmosphere where you can truly be yourself.
+        <p>As a proud LGBTQ+-friendly establishment, community is at the heart of everything we do. We believe a great cafe is more than just a place to grab a bite—it is a gathering space. That is why our walls feature rotating works by talented local artists, celebrating the incredible creativity of the Bay Area.</p>
 
-Come on in—there’s always a seat for you at our table.</p>
-<img src="{% static 'img/IMG_5553.jpeg' %}" alt="About our restaurant" style="display: block; width: 100%; max-width: 600px; height: auto; margin: 1rem auto;">
-<div style="text-align: center; margin-top: 1rem;">
-  <a class="btn btn-primary" href="{% url 'products_list' %}">View Menu</a>
-</div>
+        <p>Whether you are stopping by for a morning pick-me-up, settling in with a book, or admiring the local artwork, we promise you delicious food, friendly service, and a cozy atmosphere where you can truly be yourself.</p>
+
+        <p class="mb-0">Come on in—there’s always a seat for you at our table.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 order-1 order-lg-2">
+      <img class="img-fluid w-100 rounded shadow" src="{% static 'img/IMG_5553.jpeg' %}" alt="Inside our restaurant">
+    </div>
+  </div>
+
+  <div class="text-center mt-4 mt-lg-5">
+    <a class="btn btn-primary" href="{% url 'products_list' %}">View Menu</a>
+  </div>
+</section>
 </div>
 {% endblock %}
