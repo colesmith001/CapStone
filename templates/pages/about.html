@@ -6,10 +6,12 @@ About us
 
 {% block content %}
 <section class="about-page">
-  <header class="text-center mb-4 mb-lg-5">
-    <h1 class="display-4">About us</h1>
-    <p class="lead text-secondary mb-0">Welcome to our Stirlings Oasis</p>
-  </header>
+  <header class="text-center py-5">
+  <p class="text-uppercase text-secondary">A neighborhood café in San Francisco</p>
+  <h1 class="display-4">A welcoming place to slow down and feel at home.</h1>
+  <p class="lead">Good food, friendly faces, and a cozy place to gather.</p>
+  <a class="btn btn-primary btn-lg" href="{% url 'products_list' %}">Explore our menu</a>
+</header>
 
   <div class="row align-items-center g-4 g-lg-5">
     <div class="col-12 col-lg-6 order-2 order-lg-1">
@@ -25,13 +27,20 @@ About us
     </div>
 
     <div class="col-12 col-lg-6 order-1 order-lg-2">
-      <img class="img-fluid w-100 rounded shadow" src="{% static 'img/IMG_5553.jpeg' %}" alt="Inside our restaurant">
+      <img class="img-fluid w-100 rounded-4 shadow" src="{% static 'img/IMG_5553.jpeg' %}" alt="Inside our restaurant">
+      <style>
+  .about-image {
+    height: 420px;
+    object-fit: cover;
+    object-position: center;
+  }
+</style>
     </div>
   </div>
 
-  <div class="text-center mt-4 mt-lg-5">
+  <!-- <div class="text-center mt-4 mt-lg-5">
     <a class="btn btn-primary" href="{% url 'products_list' %}">View Menu</a>
-  </div>
+  </div> -->
 </section>
 </div>
 {% endblock %}

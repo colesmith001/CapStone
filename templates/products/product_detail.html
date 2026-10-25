@@ -9,7 +9,10 @@
   <div class="row align-items-center g-4 g-lg-5">
     <div class="col-12 col-lg-6">
       {% if product.image %}
-        <img class="img-fluid w-100 rounded shadow-sm product-detail-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+      <img
+        class="img-fluid rounded shadow-sm product-detail-image"
+        src="{{ product.image.url }}"
+        alt="{{ product.name }}">
       {% else %}
         <div class="bg-light text-secondary text-center rounded p-5" role="img" aria-label="No image available for {{ product.name }}">Stirlings Oasis</div>
       {% endif %}
@@ -28,10 +31,59 @@
   </div>
 </section>
 
+<div class = "mt-4">
+  <label class="form-label" for="quantity">Quantity</label>
+
+  <div class="input-group" style="max-width: 180px;">
+    <button 
+      class="btn btn-outline-secondary"
+      type="button"
+      id="quantity-decrease"
+      aria-label="decrease quantity">
+      &minus;
+    </button>
+
+    <input 
+      class="form-control text-center"
+      id="quantity"
+      name="quantity"
+      type="number"
+      min="1"
+      step="1"
+      value="1">
+
+      <button 
+        class="btn btn-outline-secondary"
+        type="button"
+        id="quantity-increase"
+        aria-label="Increase Quantity">
+        &plus;
+      </button>
+  </div>
+</div>
+
+<script>
+  const quantityInput = document.getElementById("quantity");
+
+  document.getElementById("quantity-decrease").addEventListener("click", function () {
+    const quantity = Number.parseInt(quantityInput.value, 10) || 1;
+    quantityInput.value = Math.max(1, quantity -1);
+  });
+
+  document.getElementById("quantity-increase").addEventListener("click", function (){
+    const quantity = Number.parseInt(quantityInput.value, 10) || 1;
+    quantityInput.value = quantity + 1;
+  });
+</script>
+
 <style>
   .product-detail-image {
-    max-height: 640px;
-    object-fit: contain;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
   }
 </style>
+
+
 {% endblock %}

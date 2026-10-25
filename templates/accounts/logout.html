@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Logged out | Stirlings Oasis{% endblock %}
+
+{% block content %}
+<section class="mx-auto text-center" style="max-width: 32rem;">
+  <h1 class="mb-3">You’re logged out</h1>
+  <p class="text-secondary">Thanks for visiting. You have been signed out.</p>
+  <a class="btn btn-primary" href="{% url 'about' %}">Back to About</a>
+</section>
+{% endblock %}
