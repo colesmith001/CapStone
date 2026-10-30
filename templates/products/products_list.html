@@ -21,21 +21,31 @@
   <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
     {% for product in products %}
       <div class="col">
-      <a class="card product-card h-100 shadow-sm text-decoration-none text-reset" href="{% url 'product_detail' product.id %}">
-        {% if product.image %}
-          <img class="card-img-top img-fluid product-card-image" src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
-        {% else %}
-          <div class="bg-light text-secondary text-center p-3" aria-hidden="true">Stirlings Oasis</div>
-        {% endif %}
-        <div class="card-body">
-          <div class="d-flex align-items-start justify-content-between gap-2">
-            <h2 class="card-title h6">{{ product.name }}</h2>
-            <span class="fw-semibold text-nowrap small">${{ product.price }}</span>
-          </div>
-          <p class="text-secondary small mb-2">{{ product.category }}</p>
-          {% if product.description %}<p class="card-text small">{{ product.description }}</p>{% endif %}
+        <div class="card product-card h-100 shadow-sm">
+          <a class="text-decoration-none text-reset" href="{% url 'product_detail' product.id %}">
+            {% if product.image %}
+              <img class="card-img-top img-fluid product-card-image" src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+            {% else %}
+              <div class="bg-light text-secondary text-center p-3" aria-hidden="true">Stirlings Oasis</div>
+            {% endif %}
+            <div class="card-body">
+              <div class="d-flex align-items-start justify-content-between gap-2">
+                <h2 class="card-title h6">{{ product.name }}</h2>
+                <span class="fw-semibold text-nowrap small">${{ product.price }}</span>
+              </div>
+              <p class="text-secondary small mb-2">{{ product.category }}</p>
+              {% if product.description %}<p class="card-text small">{{ product.description }}</p>{% endif %}
+            </div>
+          </a>
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_to_cart' product.id %}" class="p-3 pt-0 mt-auto">
+              {% csrf_token %}
+              <button class="btn btn-primary w-100" type="submit">Add to cart</button>
+            </form>
+          {% else %}
+            <a class="btn btn-primary mx-3 mb-3 mt-auto" href="{% url 'login' %}">Log in to add to cart</a>
+          {% endif %}
         </div>
-      </a>
       </div>
     {% empty %}
       <p class="col text-center text-secondary py-4">No products found. Try another search.</p>
