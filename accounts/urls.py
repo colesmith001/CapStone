@@ -16,4 +16,6 @@ urlpatterns = [
     views.logout_view,
     name='logout',
   ),
+  path("profile/", views.account_info_view, name="account_info"),
+  path("card/", views.create_setup_intent, name="card_info" )
 ]

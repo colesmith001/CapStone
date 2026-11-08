@@ -1,15 +1,222 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+  <style>
+    :root {
+      --cafe-cream: #fffaf2;
+      --cafe-coffee: #4b3026;
+      --cafe-caramel: #9a5b35;
+      --cafe-border: #ead9c5;
+      --cafe-muted: #806b5d;
+      --bs-body-color: var(--cafe-coffee);
+      --bs-body-bg: var(--cafe-cream);
+      --bs-primary: var(--cafe-caramel);
+      --bs-primary-rgb: 154, 91, 53;
+      --bs-secondary-color: var(--cafe-muted);
+      --bs-border-color: var(--cafe-border);
+      --bs-light: #f7eddf;
+      --bs-light-rgb: 247, 237, 223;
+    }
+
+    body {
+      color: var(--cafe-coffee);
+      background-color: var(--cafe-cream);
+    }
+
+    a {
+      color: var(--cafe-caramel);
+    }
+
+    a:hover {
+      color: var(--cafe-coffee);
+    }
+
+    .navbar {
+      background-color: #f3e5d2;
+      border-bottom: 1px solid var(--cafe-border);
+    }
+
+    .navbar-brand,
+    .navbar .nav-link {
+      color: var(--cafe-coffee);
+    }
+
+    .navbar-logo {
+      display: block;
+      width: 3.5rem;
+      height: 3.5rem;
+      object-fit: contain;
+    }
+
+    .navbar-brand:hover,
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: var(--cafe-caramel);
+    }
+
+    .account-dropdown {
+      position: relative;
+    }
+
+    .account-dropdown > summary {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .account-dropdown > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .navbar-profile-picture {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .account-dropdown > summary::after {
+      width: 0;
+      height: 0;
+      border-top: 0.3rem solid currentColor;
+      border-right: 0.3rem solid transparent;
+      border-left: 0.3rem solid transparent;
+      content: "";
+    }
+
+    .account-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      z-index: 1050;
+      display: none;
+      min-width: 12rem;
+      margin: 0.25rem 0 0;
+      padding: 0.5rem 0;
+      list-style: none;
+      background-color: #fffdf9;
+      border: 1px solid var(--cafe-border);
+      border-radius: 0.375rem;
+      box-shadow: 0 0.5rem 1rem rgba(75, 48, 38, 0.15);
+    }
+
+    .account-dropdown[open] > .account-dropdown-menu {
+      display: block;
+    }
+
+    .account-dropdown-menu a,
+    .account-dropdown-menu button {
+      display: block;
+      width: 100%;
+      padding: 0.375rem 1rem;
+      color: var(--cafe-coffee);
+      text-align: left;
+      text-decoration: none;
+      background: transparent;
+      border: 0;
+    }
+
+    .account-dropdown-menu a:hover,
+    .account-dropdown-menu a:focus,
+    .account-dropdown-menu button:hover,
+    .account-dropdown-menu button:focus {
+      color: var(--cafe-coffee);
+      background-color: #f7eddf;
+    }
+
+    .account-dropdown-divider {
+      height: 0;
+      margin: 0.5rem 0;
+      border: 0;
+      border-top: 1px solid var(--cafe-border);
+    }
+
+    .drawer {
+      color: var(--cafe-coffee);
+      background-color: var(--cafe-cream);
+      border: 1px solid var(--cafe-border);
+    }
+
+    .card {
+      background-color: #fffdf9;
+      border-color: var(--cafe-border);
+    }
+
+    .bg-light {
+      background-color: #f7eddf !important;
+    }
+
+    .text-secondary,
+    .link-secondary {
+      color: var(--cafe-muted) !important;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: var(--cafe-caramel);
+      border-color: var(--cafe-caramel);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background-color: var(--cafe-coffee);
+      border-color: var(--cafe-coffee);
+    }
+
+    .btn-outline-secondary {
+      color: var(--cafe-coffee);
+      border-color: var(--cafe-caramel);
+    }
+
+    .btn-outline-secondary:hover,
+    .btn-outline-secondary:focus {
+      color: #fff;
+      background-color: var(--cafe-caramel);
+      border-color: var(--cafe-caramel);
+    }
+
+    .btn-outline-danger {
+      color: #8d3f32;
+      border-color: #c98e7e;
+    }
+
+    .btn-outline-danger:hover,
+    .btn-outline-danger:focus {
+      color: #fff;
+      background-color: #8d3f32;
+      border-color: #8d3f32;
+    }
+
+    .form-control,
+    .form-select {
+      border-color: var(--cafe-border);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--cafe-caramel);
+      box-shadow: 0 0 0 0.25rem rgba(154, 91, 53, 0.2);
+    }
+
+    footer {
+      background-color: #f3e5d2 !important;
+      border-color: var(--cafe-border) !important;
+    }
+  </style>
   <title>{% block title %}Restaurant{% endblock %}</title>
 </head>
 <body class="min-vh-100 d-flex flex-column">
   <nav class="navbar md:navbar-expand bg-1">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="{% url 'about' %}">
+      <img src="{% static 'img/logo.png' %}" alt="Restaurant logo" class="navbar-logo">
+    </a>
     <button class="btn-icon navbar-toggler" type="button" data-bs-toggle="drawer" data-bs-target="#navbarDrawer" aria-controls="navbarDrawer" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon" aria-hidden="true"></span>
     </button>
@@ -27,20 +234,41 @@
             <a class="nav-link" href="{% url 'products_list' %}">Menu</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'cart_detail' %}">Cart</a>
+          <a class="nav-link" href="{%  url 'contact' %}">Contact</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="">Contact</a>
+          {% if user.is_authenticated and user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+            </li>
+          {% endif %}
+          <li class="nav-item ms-auto">
+            <a class="nav-link" href="{% url 'cart_detail' %}"><span aria-hidden="true">🛒</span> Cart</a>
           </li>
           {% if user.is_authenticated %}
-            <li class="nav-item ms-auto">
-              <span class="nav-link">Hi, {{user.username}}</span>
-            </li>
             <li class="nav-item">
-              <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="nav-link" type="submit">Logout</button>
-              </form>
+              <details class="account-dropdown">
+                <summary class="nav-link">
+                  {% if user.profile.picture %}
+                    <img
+                      src="{{ user.profile.picture.url }}"
+                      alt=""
+                      class="navbar-profile-picture">
+                  {% endif %}
+                  Hi, {{ user.username }}
+                </summary>
+                <ul class="account-dropdown-menu">
+                  <li>
+                    <a href="{% url 'account_info' %}">Account information</a>
+                  </li>
+                  <li><hr class="account-dropdown-divider"></li>
+                  <li>
+                    <form method="post" action="{% url 'logout' %}">
+                      {% csrf_token %}
+                      <button type="submit">Logout</button>
+                    </form>
+                  </li>
+                </ul>
+              </details>
             </li>
           {% else %}
             <li class="nav-item ms-auto">
@@ -77,6 +305,13 @@
 </nav>
 
 <main class="container py-4 py-md-5 flex-grow-1">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
   {% block content %}{% endblock %}
 </main>
 

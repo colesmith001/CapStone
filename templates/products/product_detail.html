@@ -3,64 +3,71 @@
 {% block title %}{{ product.name }} | Our Menu{% endblock %}
 
 {% block content %}
-<section class="product-detail">
-  <p><a href="{% url 'products_list' %}">&larr; Back to menu</a></p>
+<form method="post" action="{% url 'add_to_cart' product.id %}">
+  {% csrf_token %}
 
-  <div class="row align-items-center g-4 g-lg-5">
-    <div class="col-12 col-lg-6">
-      {% if product.image %}
-      <img
-        class="img-fluid rounded shadow-sm product-detail-image"
-        src="{{ product.image.url }}"
-        alt="{{ product.name }}">
-      {% else %}
-        <div class="bg-light text-secondary text-center rounded p-5" role="img" aria-label="No image available for {{ product.name }}">Stirlings Oasis</div>
-      {% endif %}
+  <section class="product-detail">
+    <p><a href="{% url 'products_list' %}">&larr; Back to menu</a></p>
+
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-12 col-lg-6">
+        {% if product.image %}
+        <img
+          class="img-fluid rounded shadow-sm product-detail-image"
+          src="{{ product.image.url }}"
+          alt="{{ product.name }}">
+        {% else %}
+          <div class="bg-light text-secondary text-center rounded p-5" role="img" aria-label="No image available for {{ product.name }}">Stirlings Oasis</div>
+        {% endif %}
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <p class="text-secondary mb-2">{{ product.category }}</p>
+        <h1 class="display-5">{{ product.name }}</h1>
+        <p class="fs-4 fw-semibold">${{ product.price }}</p>
+        {% if product.description %}
+          <p class="fs-5 lh-lg">{{ product.description }}</p>
+        {% else %}
+          <p class="text-secondary">More details coming soon.</p>
+        {% endif %}
+      </div>
     </div>
+  </section>
 
-    <div class="col-12 col-lg-6">
-      <p class="text-secondary mb-2">{{ product.category }}</p>
-      <h1 class="display-5">{{ product.name }}</h1>
-      <p class="fs-4 fw-semibold">${{ product.price }}</p>
-      {% if product.description %}
-        <p class="fs-5 lh-lg">{{ product.description }}</p>
-      {% else %}
-        <p class="text-secondary">More details coming soon.</p>
-      {% endif %}
-    </div>
-  </div>
-</section>
+  <div class="mt-4">
+    <label class="form-label" for="quantity">Quantity</label>
 
-<div class = "mt-4">
-  <label class="form-label" for="quantity">Quantity</label>
-
-  <div class="input-group" style="max-width: 180px;">
-    <button 
-      class="btn btn-outline-secondary"
-      type="button"
-      id="quantity-decrease"
-      aria-label="decrease quantity">
-      &minus;
-    </button>
-
-    <input 
-      class="form-control text-center"
-      id="quantity"
-      name="quantity"
-      type="number"
-      min="1"
-      step="1"
-      value="1">
-
-      <button 
+    <div class="input-group" style="max-width: 180px;">
+      <button
         class="btn btn-outline-secondary"
         type="button"
-        id="quantity-increase"
-        aria-label="Increase Quantity">
-        &plus;
+        id="quantity-decrease"
+        aria-label="decrease quantity">
+        &minus;
       </button>
+
+      <input
+        class="form-control text-center"
+        id="quantity"
+        name="quantity"
+        type="number"
+        min="1"
+        step="1"
+        value="1">
+
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          id="quantity-increase"
+          aria-label="Increase Quantity">
+          &plus;
+        </button>
+    </div>
   </div>
-</div>
+
+  <button class="btn btn-primary mt-3" type="submit">Add to cart</button>
+
+</form>
 
 <script>
   const quantityInput = document.getElementById("quantity");
@@ -75,6 +82,7 @@
     quantityInput.value = quantity + 1;
   });
 </script>
+
 
 <style>
   .product-detail-image {

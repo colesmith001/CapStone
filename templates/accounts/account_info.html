@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Account information{% endblock %}
+
+{% block content %}
+  <h1>Account Information</h1>
+  <div class="card p-3">
+    {% for field in form %}
+      <form method="post" class="account-info-row border-bottom py-3" data-account-row>
+        {% csrf_token %}
+        <input type="hidden" name="field" value="{{ field.name }}">
+        <div class="d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" type="button" data-edit> Edit </button>
+            <button class="btn btn-primary" type="submit" data-save hidden>Save</button>
+            <button class="btn btn-outline-secondary" type="button" data-cancel hidden>Cancel</button>
+          </div>
+        </div>
+      </form>
+    {% endfor %}
+
+    <form method="post" enctype="multipart/form-data" class="account-info-row py-3" data-account-row>
+      {% csrf_token %}
+      <input type="hidden" name="field" value="picture">
+      <div class="d-flex align-items-center gap-3">
+        <div class="flex-grow-1">
+          <label for="{{ picture_form.picture.id_for_label }}">Profile picture</label>
+          {% if profile.picture %}
+            <div class="mb-2">
+              <img src="{{ profile.picture.url }}" alt="Current profile picture" class="navbar-profile-picture">
+            </div>
+          {% endif %}
+          {{ picture_form.picture }}
+          {{ picture_form.picture.errors }}
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary" type="button" data-edit>Edit</button>
+          <button class="btn btn-primary" type="submit" data-save hidden>Save</button>
+          <button class="btn btn-outline-secondary" type="button" data-cancel hidden>Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.querySelectorAll("[data-account-row]").forEach((row) => {
+      const field = row.querySelector("input:not([type='hidden'])");
+      const editButton = row.querySelector("[data-edit]");
+      const saveButton = row.querySelector("[data-save]");
+      const cancelButton = row.querySelector("[data-cancel]");
+
+      editButton.addEventListener("click", () => {
+        if (field.type === "file") {
+          field.disabled = false;
+        } else {
+          field.readOnly = false;
+        }
+        editButton.hidden = true;
+        saveButton.hidden = false;
+        cancelButton.hidden = false;
+        field.focus();
+      });
+
+      cancelButton.addEventListener("click", () => {
+        row.reset();
+        if (field.type === "file") {
+          field.disabled = true;
+        } else {
+          field.readOnly = true;
+        }
+        editButton.hidden = false;
+        saveButton.hidden = true;
+        cancelButton.hidden = true;
+      });
+    });
+  </script>
+{% endblock %}

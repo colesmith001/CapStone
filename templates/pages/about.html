@@ -14,7 +14,11 @@ About us
 </header>
 
   <div class="row align-items-center g-4 g-lg-5">
-    <div class="col-12 col-lg-6 order-2 order-lg-1">
+    <div class="col-6">
+      <img class="about-image img-fluid w-100 rounded-4 shadow" src="{% static 'img/oasis 1.PNG' %}" alt="Inside our restaurant">
+    </div>
+
+    <div class="col-6">
       <div class="fs-5 lh-lg">
         <p>Welcome to our corner of San Francisco! Founded by Eloise Raymond and co-owned by Cole Smith, our cafe was born out of a college hospitality assignment that sparked a lifelong dream. What started as a classroom project blossomed into a shared vision: to create a warm, welcoming space where everyone feels at home, safe, and valued.</p>
 
@@ -25,22 +29,18 @@ About us
         <p class="mb-0">Come on in—there’s always a seat for you at our table.</p>
       </div>
     </div>
-
-    <div class="col-12 col-lg-6 order-1 order-lg-2">
-      <img class="img-fluid w-100 rounded-4 shadow" src="{% static 'img/IMG_5553.jpeg' %}" alt="Inside our restaurant">
-      <style>
-  .about-image {
-    height: 420px;
-    object-fit: cover;
-    object-position: center;
-  }
-</style>
-    </div>
   </div>
 
   <!-- <div class="text-center mt-4 mt-lg-5">
     <a class="btn btn-primary" href="{% url 'products_list' %}">View Menu</a>
   </div> -->
 </section>
-</div>
+
+<style>
+  .about-image {
+    display: block;
+    max-height: 500px;
+    object-fit: contain;
+  }
+</style>
 {% endblock %}

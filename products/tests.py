@@ -93,3 +93,22 @@ class CartTests(TestCase):
 
     self.assertEqual(response.status_code, 200)
     self.assertContains(response, "Your cart is empty.")
+
+def test_adding_custom_quantity_to_cart(self):
+  url = reverse("add_to_cart", args=[self.product.pk])
+
+  response = self.client.post(url, {"quantity": "3"})
+
+  item = CartItem.objects.get(cart_user=self.user, product=self.product)
+  self.asertEqual(response.status_code, 302)
+  self.asserEqual(item.quantity, 3)
+
+def test_invalid_quantity_does_not_add_item(self):
+  url = reverse("add_to_cart", args=[self.product.pk])
+
+  self.client.post(url, {"quantity": "0"})
+
+  self.assertFalse(
+    CartItem.objects.filter(cart__user=self.user, product=self.product).exists()
+  )
+
