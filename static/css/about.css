@@ -1,0 +1,149 @@
+.about-page {
+  max-width: 76rem;
+}
+
+.about-hero {
+  position: relative;
+  display: flex;
+  min-height: 34rem;
+  align-items: flex-end;
+  overflow: hidden;
+  color: #fff;
+  background: #30251d;
+  border-radius: 1.25rem;
+  isolation: isolate;
+}
+
+.about-hero::after {
+  position: absolute;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(28, 20, 15, 0.88) 0%, rgba(28, 20, 15, 0.62) 48%, rgba(28, 20, 15, 0.12) 100%);
+  content: "";
+  inset: 0;
+}
+
+.about-hero-image {
+  position: absolute;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 54%;
+  inset: 0;
+}
+
+.about-hero-content {
+  max-width: 48rem;
+  padding: clamp(2rem, 7vw, 5.5rem);
+}
+
+.about-eyebrow {
+  color: #f0c99e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.about-hero h1 {
+  max-width: 13ch;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.7rem, 6vw, 5rem);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.about-hero-copy {
+  max-width: 36rem;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.7;
+}
+
+.about-button-light {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+.about-button-light:hover,
+.about-button-light:focus {
+  color: var(--cafe-coffee);
+  background: #fffaf2;
+  border-color: #fffaf2;
+}
+
+.about-section {
+  padding: clamp(3rem, 7vw, 5.5rem) 0;
+}
+
+.about-story-image-wrap {
+  position: relative;
+  min-height: 24rem;
+  overflow: hidden;
+  background: #e9dccb;
+  border-radius: 1rem;
+}
+
+.about-story-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  inset: 0;
+}
+
+.about-story-copy {
+  color: var(--cafe-muted);
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.about-quote {
+  padding: 1.25rem 1.5rem;
+  color: var(--cafe-coffee);
+  background: #f7eddf;
+  border-left: 3px solid var(--cafe-caramel);
+  border-radius: 0 0.75rem 0.75rem 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  line-height: 1.5;
+}
+
+.about-value-card {
+  height: 100%;
+  background: #fffdf9;
+  border: 1px solid var(--cafe-border);
+  border-radius: 0.9rem;
+  box-shadow: 0 0.35rem 1rem rgba(75, 48, 38, 0.05);
+}
+
+.about-value-number {
+  color: var(--cafe-caramel);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+}
+
+.about-cta {
+  color: #fff;
+  background: var(--cafe-coffee);
+  border-radius: 1.1rem;
+}
+
+.about-cta .about-eyebrow {
+  color: #f0c99e;
+}
+
+@media (max-width: 767.98px) {
+  .about-hero {
+    min-height: 31rem;
+    border-radius: 0.9rem;
+  }
+
+  .about-hero::after {
+    background: linear-gradient(0deg, rgba(28, 20, 15, 0.88), rgba(28, 20, 15, 0.18));
+  }
+
+  .about-story-image-wrap {
+    min-height: 20rem;
+  }
+}

@@ -1,46 +1,129 @@
 {% extends "base.html" %}
-{% block title %}
-About us 
-{% endblock %}
 {% load static %}
 
+{% block title %}About Sterling's Coffee Oasis{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="about-page">
-  <header class="text-center py-5">
-  <p class="text-uppercase text-secondary">A neighborhood café in San Francisco</p>
-  <h1 class="display-4">A welcoming place to slow down and feel at home.</h1>
-  <p class="lead">Good food, friendly faces, and a cozy place to gather.</p>
-  <a class="btn btn-primary btn-lg" href="{% url 'products_list' %}">Explore our menu</a>
-</header>
-
-  <div class="row align-items-center g-4 g-lg-5">
-    <div class="col-6">
-      <img class="about-image img-fluid w-100 rounded-4 shadow" src="{% static 'img/oasis 1.PNG' %}" alt="Inside our restaurant">
-    </div>
-
-    <div class="col-6">
-      <div class="fs-5 lh-lg">
-        <p>Welcome to our corner of San Francisco! Founded by Eloise Raymond and co-owned by Cole Smith, our cafe was born out of a college hospitality assignment that sparked a lifelong dream. What started as a classroom project blossomed into a shared vision: to create a warm, welcoming space where everyone feels at home, safe, and valued.</p>
-
-        <p>As a proud LGBTQ+-friendly establishment, community is at the heart of everything we do. We believe a great cafe is more than just a place to grab a bite—it is a gathering space. That is why our walls feature rotating works by talented local artists, celebrating the incredible creativity of the Bay Area.</p>
-
-        <p>Whether you are stopping by for a morning pick-me-up, settling in with a book, or admiring the local artwork, we promise you delicious food, friendly service, and a cozy atmosphere where you can truly be yourself.</p>
-
-        <p class="mb-0">Come on in—there’s always a seat for you at our table.</p>
+<main class="container about-page py-4 py-lg-5">
+  <section class="about-hero mb-4 mb-lg-5" aria-labelledby="about-title">
+    <img
+      class="about-hero-image"
+      src="{% static 'img/oasis 2.PNG' %}"
+      alt="Sterling's Coffee Oasis glowing warmly at dusk"
+    >
+    <div class="about-hero-content">
+      <p class="about-eyebrow mb-3">A neighborhood café in San Francisco</p>
+      <h1 id="about-title" class="mb-3">
+        Good coffee. Good company. A place to belong.
+      </h1>
+      <p class="about-hero-copy mb-4">
+        A cozy corner to slow down, meet your people, and feel right at home.
+      </p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary btn-lg" href="{% url 'products_list' %}">
+          Explore the menu
+        </a>
+        <a class="btn btn-outline-light about-button-light btn-lg" href="{% url 'contact' %}">
+          Get in touch
+        </a>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- <div class="text-center mt-4 mt-lg-5">
-    <a class="btn btn-primary" href="{% url 'products_list' %}">View Menu</a>
-  </div> -->
-</section>
+  <section class="about-section" aria-labelledby="story-title">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-12 col-lg-6">
+        <!-- <div class="about-story-image-wrap shadow-sm">
+          <img
+            class="about-story-image"
+            src="{% static 'img/oasis 1.PNG' %}"
+            alt="The warm, plant-filled interior of Sterling's Coffee Oasis"
+            loading="lazy"
+          >
+        </div> -->
+      </div>
+      <div class="col-12 col-lg-6">
+        <p class="about-eyebrow mb-2">Our story</p>
+        <h2 id="story-title" class="display-6 mb-3">
+          Rooted in a simple idea: everyone deserves a seat.
+        </h2>
+        <div class="about-story-copy">
+          <p>
+            Founded by Eloise Raymond and co-owned by Cole Smith, our café began
+            as a college hospitality assignment and grew into a shared dream:
+            creating a warm, welcoming space where everyone feels safe, valued,
+            and at home.
+          </p>
+          <p>
+            We believe a great café is more than a place to grab a bite. It is a
+            gathering space, a neighborhood living room, and a place to connect.
+            Our walls feature rotating works by talented local artists,
+            celebrating the creativity of the Bay Area.
+          </p>
+          <p class="about-quote mb-0">
+            Come in for a morning pick-me-up, stay for the company. There is
+            always a seat for you at our table.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<style>
-  .about-image {
-    display: block;
-    max-height: 500px;
-    object-fit: contain;
-  }
-</style>
+  <section class="pb-4 pb-lg-5" aria-labelledby="values-title">
+    <div class="text-center mb-4">
+      <p class="about-eyebrow mb-2">What makes us, us</p>
+      <h2 id="values-title" class="display-6 mb-2">Made for the neighborhood</h2>
+      <p class="text-secondary mb-0">
+        The little things that make this feel like your place, too.
+      </p>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <article class="about-value-card p-4">
+          <span class="about-value-number">01</span>
+          <h3 class="h5 mt-3">Come as you are</h3>
+          <p class="text-secondary mb-0">
+            We are proud to be an LGBTQ+-friendly café where everyone is welcome.
+          </p>
+        </article>
+      </div>
+      <div class="col-12 col-md-4">
+        <article class="about-value-card p-4">
+          <span class="about-value-number">02</span>
+          <h3 class="h5 mt-3">Local creativity</h3>
+          <p class="text-secondary mb-0">
+            Rotating artwork brings the talent and imagination of Bay Area
+            artists into our space.
+          </p>
+        </article>
+      </div>
+      <div class="col-12 col-md-4">
+        <article class="about-value-card p-4">
+          <span class="about-value-number">03</span>
+          <h3 class="h5 mt-3">A moment to settle in</h3>
+          <p class="text-secondary mb-0">
+            Whether you are meeting a friend or taking a quiet break, make
+            yourself comfortable.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-cta p-4 p-md-5 text-center" aria-labelledby="visit-title">
+    <p class="about-eyebrow mb-2">We saved you a seat</p>
+    <h2 id="visit-title" class="display-6 mb-2">Your next cozy moment starts here.</h2>
+    <p class="mb-4" style="color: rgba(255, 255, 255, 0.8);">
+      Take a look at the menu, then come by and make yourself at home.
+    </p>
+    <a class="btn btn-primary btn-lg" href="{% url 'products_list' %}">
+      Find your favorite
+    </a>
+  </section>
+</main>
 {% endblock %}

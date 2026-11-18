@@ -204,12 +204,65 @@
       box-shadow: 0 0 0 0.25rem rgba(154, 91, 53, 0.2);
     }
 
+    .account-page {
+      max-width: 72rem;
+    }
+
+    .account-info-row:last-child {
+      border-bottom: 0 !important;
+    }
+
+    .account-info-row input[readonly] {
+      background-color: #fbf7f0;
+    }
+
+    .account-profile-text {
+      min-width: 0;
+    }
+
+    .account-avatar {
+      flex: 0 0 4.25rem;
+      width: 4.25rem;
+      height: 4.25rem;
+      object-fit: cover;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0.25rem 0.75rem rgba(75, 48, 38, 0.15);
+    }
+
+    .account-avatar-fallback {
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--cafe-caramel), var(--cafe-coffee));
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .account-payment-icon {
+      padding: 0.35rem 0.65rem;
+      color: var(--cafe-caramel);
+      background-color: #f7eddf;
+      border: 1px solid var(--cafe-border);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .account-payment-summary {
+      background-color: #fbf7f0;
+      border: 1px solid var(--cafe-border);
+    }
+
     footer {
       background-color: #f3e5d2 !important;
       border-color: var(--cafe-border) !important;
     }
   </style>
   <title>{% block title %}Restaurant{% endblock %}</title>
+  {% block extra_head %}{% endblock %}
 </head>
 <body class="min-vh-100 d-flex flex-column">
   <nav class="navbar md:navbar-expand bg-1">

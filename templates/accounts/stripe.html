@@ -1,26 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-  <form id="save-card-form">
+{% extends "base.html" %}
+
+{% block title %}Save a card{% endblock %}
+
+{% block content %}
+  <h1>Save a card</h1>
+  <p>Card details are collected securely by Stripe. This does not charge your card.</p>
+  {% if profile.card_last4 %}
+    <p>
+      Current saved card: {{ profile.card_brand|title }}
+      ending in {{ profile.card_last4 }}.
+    </p>
+  {% endif %}
+
+  <form id="save-card-form" class="card p-3">
     {% csrf_token %}
     <div id="payment-element"></div>
-    <button id="save-card-button" type="submit">Save card</button>
-    <p id="card-message" role="status"></p>
+    <button id="save-card-button" class="btn btn-primary mt-3" type="submit" disabled>
+      Save card
+    </button>
+    <p id="card-message" class="mt-3 mb-0" role="status" aria-live="polite"></p>
   </form>
 
+  <script src="https://js.stripe.com/v3/"></script>
   <script>
     const form = document.querySelector("#save-card-form");
     const message = document.querySelector("#card-message");
     const button = document.querySelector("#save-card-button");
     const csrfToken = form.querySelector("[name=csrfmiddlewaretoken]").value;
+    const publishableKey = "{{ stripe_publishable_key|escapejs }}";
 
     async function startCardSetup() {
+      if (!publishableKey) {
+        throw new Error("Card setup is unavailable because Stripe is not configured.");
+      }
+
       message.textContent = "Preparing secure card form...";
 
       const response = await fetch("{% url 'create_setup_intent' %}", {
@@ -33,35 +46,44 @@
         throw new Error (data.error || "could not prepare card setup.");
       }
 
-      const stripe = Stripe("YOUR_PUBLISHABLE_KEY");
-      const elements = stripe.elements({ clientSecret: data.client_secret});
+      const stripe = Stripe(publishableKey);
+      const elements = stripe.elements({ clientSecret: data.client_secret });
       elements.create("payment").mount("#payment-element");
 
       message.textContent = "";
+      button.disabled = false;
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         button.disabled = true;
         message.textContent = "Saving card...";
 
-        const { error } = await stripe.confirmSetup({
-          elements, 
-          confirmParams: {
-            return_url: window.location.href,
-          },
-        });
+        try {
+          const { error, setupIntent } = await stripe.confirmSetup({
+            elements,
+            redirect: "if_required",
+            confirmParams: {
+              return_url: window.location.href,
+            },
+          });
 
-        if (error){
+          if (error) {
+            message.textContent = error.message;
+            button.disabled = false;
+          } else if (setupIntent && setupIntent.status === "succeeded") {
+            message.textContent =
+              "Card setup succeeded. Your saved card details will appear on your account shortly.";
+          }
+        } catch (error) {
           message.textContent = error.message;
           button.disabled = false;
         }
       });
     }
 
-    startCardSetup().catch((error) =>{
+    startCardSetup().catch((error) => {
       message.textContent = error.message;
-    })
+    });
 
   </script>
-</body>
-</html>
+{% endblock %}

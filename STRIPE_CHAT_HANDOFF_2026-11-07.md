@@ -49,3 +49,5 @@ These were observed in the files during today's discussion; check that they are 
 
 
 explain to me what else I need to implement stripe api to simulate card info onto users accounts with code examples // prompt to get back to AI help 
+gmail app password
+eesm stxm egdt dath

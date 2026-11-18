@@ -1,67 +1,130 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Products{% endblock %}
+{% block title %}Our Menu{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+{% endblock %}
 
 {% block content %}
-<section class="products-page">
-  <header class="text-center mb-4 mb-lg-5">
-    <h1 class="display-4">Our Menu</h1>
-    <p class="lead text-secondary">Find something delicious to enjoy.</p>
-  </header>
-
-  <form class="mx-auto mb-4 mb-lg-5" style="max-width: 680px;" method="get" role="search">
-    <label class="form-label fw-semibold" for="search">Search menu</label>
-    <div class="d-flex flex-column flex-sm-row gap-2">
-      <input class="form-control" id="search" type="search" name="q" value="{{ query }}" placeholder="Search dishes or categories">
-      <button class="btn btn-primary" type="submit">Search</button>
-      {% if query %}<a class="btn btn-outline-secondary" href="{% url 'products_list' %}">Clear</a>{% endif %}
+<main class="container menu-page py-4 py-lg-5">
+  <section class="menu-hero mb-4 mb-lg-5" aria-labelledby="menu-title">
+    <div class="menu-hero-copy">
+      <p class="menu-eyebrow mb-3">Sterling's Coffee Oasis</p>
+      <h1 id="menu-title">A little comfort.<br> A lot of flavor.</h1>
+      <p class="menu-hero-description mb-0">
+        Find a favorite for your morning, your afternoon, or any moment in between.
+      </p>
     </div>
-  </form>
+    <div class="menu-hero-note" aria-hidden="true">
+      <span class="menu-hero-note-mark">S</span>
+      <span>Good things<br>are brewing</span>
+    </div>
+  </section>
 
-  <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
-    {% for product in products %}
-      <div class="col">
-        <div class="card product-card h-100 shadow-sm">
-          <a class="text-decoration-none text-reset" href="{% url 'product_detail' product.id %}">
-            {% if product.image %}
-              <img class="card-img-top img-fluid product-card-image" src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
-            {% else %}
-              <div class="bg-light text-secondary text-center p-3" aria-hidden="true">Stirlings Oasis</div>
-            {% endif %}
-            <div class="card-body">
-              <div class="d-flex align-items-start justify-content-between gap-2">
-                <h2 class="card-title h6">{{ product.name }}</h2>
-                <span class="fw-semibold text-nowrap small">${{ product.price }}</span>
+  <section class="menu-search-panel mb-4 mb-lg-5" aria-label="Search the menu">
+    <form method="get" role="search">
+      <label class="form-label fw-semibold" for="menu-search">
+        What are you craving?
+      </label>
+      <div class="menu-search-controls">
+        <input
+          class="form-control"
+          id="menu-search"
+          type="search"
+          name="q"
+          value="{{ query }}"
+          placeholder="Search coffee, brunch, or something sweet"
+        >
+        <button class="btn btn-primary" type="submit">Search menu</button>
+        {% if query %}
+          <a class="btn btn-outline-secondary" href="{% url 'products_list' %}">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="menu-items-title">
+    <div class="menu-section-heading mb-3">
+      <div>
+        <p class="menu-eyebrow mb-1">{% if query %}Your search{% else %}Made for your moment{% endif %}</p>
+        <h2 id="menu-items-title" class="h3 mb-0">
+          {% if query %}Menu results{% else %}Explore the menu{% endif %}
+        </h2>
+      </div>
+      {% with product_count=products|length %}
+        <span class="menu-item-count">
+          {{ product_count }} item{{ product_count|pluralize }}
+        </span>
+      {% endwith %}
+    </div>
+
+    <div class="menu-grid">
+      {% for product in products %}
+        <article class="menu-card">
+          <a class="menu-card-link" href="{% url 'product_detail' product.id %}">
+            <div class="menu-card-image-wrap">
+              {% if product.image %}
+                <img
+                  class="menu-card-image"
+                  src="{{ product.image.url }}"
+                  alt="{{ product.name }}"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="menu-card-placeholder" aria-hidden="true">
+                  <span>Stirling's</span>
+                  <span>Coffee Oasis</span>
+                </div>
+              {% endif %}
+              {% if product.category %}
+                <span class="menu-card-category">{{ product.category }}</span>
+              {% endif %}
+            </div>
+
+            <div class="menu-card-body">
+              <div class="menu-card-title-row">
+                <h3 class="menu-card-title">{{ product.name }}</h3>
+                <span class="menu-card-price">${{ product.price }}</span>
               </div>
-              <p class="text-secondary small mb-2">{{ product.category }}</p>
-              {% if product.description %}<p class="card-text small">{{ product.description }}</p>{% endif %}
+              {% if product.description %}
+                <p class="menu-card-description">{{ product.description }}</p>
+              {% else %}
+                <p class="menu-card-description menu-card-description-muted">
+                  See the item details for more information.
+                </p>
+              {% endif %}
             </div>
           </a>
-          {% if user.is_authenticated %}
-            <form method="post" action="{% url 'add_to_cart' product.id %}" class="p-3 pt-0 mt-auto">
-              {% csrf_token %}
-              <button class="btn btn-primary w-100" type="submit">Add to cart</button>
-            </form>
-          {% else %}
-            <a class="btn btn-primary mx-3 mb-3 mt-auto" href="{% url 'login' %}">Log in to add to cart</a>
-          {% endif %}
+
+          <div class="menu-card-action">
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary w-100" type="submit">
+                  Add to cart
+                  <span aria-hidden="true">+</span>
+                </button>
+              </form>
+            {% else %}
+              <a class="btn btn-outline-secondary w-100" href="{% url 'login' %}">
+                Log in to add to cart
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      {% empty %}
+        <div class="menu-empty">
+          <span class="menu-empty-mark" aria-hidden="true">?</span>
+          <h3 class="h4">Nothing on the menu matched that search.</h3>
+          <p class="text-secondary mb-3">
+            Try a different word or browse the full menu.
+          </p>
+          <a class="btn btn-primary" href="{% url 'products_list' %}">Show all items</a>
         </div>
-      </div>
-    {% empty %}
-      <p class="col text-center text-secondary py-4">No products found. Try another search.</p>
-    {% endfor %}
-  </div>
-</section>
-
-<style>
-  .product-card-image {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-
-  .product-card .card-body {
-    padding: 0.75rem;
-  }
-</style>
+      {% endfor %}
+    </div>
+  </section>
+</main>
 {% endblock %}

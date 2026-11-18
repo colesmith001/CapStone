@@ -1,97 +1,121 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ product.name }} | Our Menu{% endblock %}
 
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+{% endblock %}
+
 {% block content %}
-<form method="post" action="{% url 'add_to_cart' product.id %}">
-  {% csrf_token %}
+<main class="container product-detail-page py-4 py-lg-5">
+  <a class="product-back-link mb-3" href="{% url 'products_list' %}">
+    <span aria-hidden="true">&larr;</span>
+    Back to menu
+  </a>
 
-  <section class="product-detail">
-    <p><a href="{% url 'products_list' %}">&larr; Back to menu</a></p>
-
-    <div class="row align-items-center g-4 g-lg-5">
+  <form method="post" action="{% url 'add_to_cart' product.id %}" class="product-detail-panel">
+    {% csrf_token %}
+    <div class="row g-0">
       <div class="col-12 col-lg-6">
-        {% if product.image %}
-        <img
-          class="img-fluid rounded shadow-sm product-detail-image"
-          src="{{ product.image.url }}"
-          alt="{{ product.name }}">
-        {% else %}
-          <div class="bg-light text-secondary text-center rounded p-5" role="img" aria-label="No image available for {{ product.name }}">Stirlings Oasis</div>
-        {% endif %}
+        <div class="product-detail-media">
+          {% if product.image %}
+            <img
+              class="product-detail-image"
+              src="{{ product.image.url }}"
+              alt="{{ product.name }}"
+            >
+          {% else %}
+            <div
+              class="product-detail-placeholder"
+              role="img"
+              aria-label="No image available for {{ product.name }}"
+            >
+              <span class="product-detail-placeholder-mark">S</span>
+              <span>Stirling's Coffee Oasis</span>
+            </div>
+          {% endif %}
+        </div>
       </div>
 
       <div class="col-12 col-lg-6">
-        <p class="text-secondary mb-2">{{ product.category }}</p>
-        <h1 class="display-5">{{ product.name }}</h1>
-        <p class="fs-4 fw-semibold">${{ product.price }}</p>
-        {% if product.description %}
-          <p class="fs-5 lh-lg">{{ product.description }}</p>
-        {% else %}
-          <p class="text-secondary">More details coming soon.</p>
-        {% endif %}
+        <div class="product-detail-content">
+          {% if product.category %}
+            <p class="product-detail-category mb-3">{{ product.category }}</p>
+          {% endif %}
+
+          <h1 class="product-detail-title">{{ product.name }}</h1>
+          <p class="product-detail-price">${{ product.price }}</p>
+
+          <div class="product-detail-description">
+            {% if product.description %}
+              <p>{{ product.description }}</p>
+            {% else %}
+              <p class="text-secondary">More details coming soon.</p>
+            {% endif %}
+          </div>
+
+          <div class="product-detail-purchase">
+            <label class="form-label fw-semibold" for="quantity">Quantity</label>
+            <div class="product-quantity-control">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="quantity-decrease"
+                aria-label="Decrease quantity"
+              >
+                &minus;
+              </button>
+              <input
+                class="form-control text-center"
+                id="quantity"
+                name="quantity"
+                type="number"
+                min="1"
+                max="99"
+                step="1"
+                value="1"
+                inputmode="numeric"
+                aria-label="Quantity"
+              >
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="quantity-increase"
+                aria-label="Increase quantity"
+              >
+                &plus;
+              </button>
+            </div>
+
+            <button class="btn btn-primary btn-lg product-add-button" type="submit">
+              Add to cart
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+            <p class="product-detail-note mb-0">
+              Made with care at Sterling's Coffee Oasis.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-
-  <div class="mt-4">
-    <label class="form-label" for="quantity">Quantity</label>
-
-    <div class="input-group" style="max-width: 180px;">
-      <button
-        class="btn btn-outline-secondary"
-        type="button"
-        id="quantity-decrease"
-        aria-label="decrease quantity">
-        &minus;
-      </button>
-
-      <input
-        class="form-control text-center"
-        id="quantity"
-        name="quantity"
-        type="number"
-        min="1"
-        step="1"
-        value="1">
-
-        <button
-          class="btn btn-outline-secondary"
-          type="button"
-          id="quantity-increase"
-          aria-label="Increase Quantity">
-          &plus;
-        </button>
-    </div>
-  </div>
-
-  <button class="btn btn-primary mt-3" type="submit">Add to cart</button>
-
-</form>
+  </form>
+</main>
 
 <script>
   const quantityInput = document.getElementById("quantity");
+  const decreaseButton = document.getElementById("quantity-decrease");
+  const increaseButton = document.getElementById("quantity-increase");
+  const maxQuantity = Number(quantityInput.max);
 
-  document.getElementById("quantity-decrease").addEventListener("click", function () {
+  decreaseButton.addEventListener("click", () => {
     const quantity = Number.parseInt(quantityInput.value, 10) || 1;
-    quantityInput.value = Math.max(1, quantity -1);
+    quantityInput.value = Math.max(1, quantity - 1);
   });
 
-  document.getElementById("quantity-increase").addEventListener("click", function (){
+  increaseButton.addEventListener("click", () => {
     const quantity = Number.parseInt(quantityInput.value, 10) || 1;
-    quantityInput.value = quantity + 1;
+    quantityInput.value = Math.min(maxQuantity, quantity + 1);
   });
 </script>
-
-
-<style>
-  .product-detail-image {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-</style>
-
-
 {% endblock %}

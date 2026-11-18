@@ -1,51 +1,210 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Account information{% endblock %}
+{% block title %}Your account{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/account_info.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h1>Account Information</h1>
-  <div class="card p-3">
-    {% for field in form %}
-      <form method="post" class="account-info-row border-bottom py-3" data-account-row>
-        {% csrf_token %}
-        <input type="hidden" name="field" value="{{ field.name }}">
-        <div class="d-flex align-items-center gap-3">
-          <div class="flex-grow-1">
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.errors }}
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" type="button" data-edit> Edit </button>
-            <button class="btn btn-primary" type="submit" data-save hidden>Save</button>
-            <button class="btn btn-outline-secondary" type="button" data-cancel hidden>Cancel</button>
-          </div>
-        </div>
-      </form>
-    {% endfor %}
-
-    <form method="post" enctype="multipart/form-data" class="account-info-row py-3" data-account-row>
-      {% csrf_token %}
-      <input type="hidden" name="field" value="picture">
-      <div class="d-flex align-items-center gap-3">
+  <main class="container account-screen py-4 py-lg-5">
+    <header class="account-hero p-4 p-md-5 mb-4">
+      <div class="account-hero-content d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+        {% if profile.picture %}
+          <img src="{{ profile.picture.url }}" alt="Your profile photo" class="account-avatar">
+        {% else %}
+          <div class="account-avatar" aria-hidden="true">{{ user.username|first|upper }}</div>
+        {% endif %}
         <div class="flex-grow-1">
-          <label for="{{ picture_form.picture.id_for_label }}">Profile picture</label>
-          {% if profile.picture %}
-            <div class="mb-2">
-              <img src="{{ profile.picture.url }}" alt="Current profile picture" class="navbar-profile-picture">
-            </div>
-          {% endif %}
-          {{ picture_form.picture }}
-          {{ picture_form.picture.errors }}
+          <p class="account-eyebrow text-uppercase small fw-semibold mb-2">Account center</p>
+          <h1 class="h2 mb-1">Welcome back, {{ user.first_name|default:user.username }}</h1>
+          <p class="text-secondary mb-0">
+            Manage your profile and payment details in one place.
+          </p>
         </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-outline-secondary" type="button" data-edit>Edit</button>
-          <button class="btn btn-primary" type="submit" data-save hidden>Save</button>
-          <button class="btn btn-outline-secondary" type="button" data-cancel hidden>Cancel</button>
+        <span class="account-hero-tag">Your profile</span>
+      </div>
+    </header>
+
+    {% if messages %}
+      <div class="mb-4" aria-live="polite">
+        {% for message in messages %}
+          <div
+            class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-2"
+            role="status"
+          >
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-7">
+        <section class="account-panel p-4 p-md-5">
+          <header class="account-panel-heading mb-3">
+            <span class="account-panel-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M5 20a7 7 0 0 1 14 0"/>
+              </svg>
+            </span>
+            <div>
+              <p class="account-eyebrow text-uppercase small fw-semibold mb-1">Profile</p>
+              <h2 class="h4 mb-1">Personal information</h2>
+              <p class="text-secondary mb-0">
+                Choose Edit beside a field to update it.
+              </p>
+            </div>
+          </header>
+
+          {% for field in form %}
+            <form method="post" class="account-field-row" data-account-row>
+              {% csrf_token %}
+              <input type="hidden" name="field" value="{{ field.name }}">
+              <div class="row align-items-end g-3">
+                <div class="col-12 col-sm">
+                  <label class="form-label fw-semibold" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                  </label>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                <div class="col-12 col-sm-auto">
+                  <div class="d-flex gap-2">
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      type="button"
+                      data-edit
+                      aria-label="Edit {{ field.label }}"
+                    >
+                      Edit
+                    </button>
+                    <button class="btn btn-sm btn-primary" type="submit" data-save hidden>
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      type="button"
+                      data-cancel
+                      hidden
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          {% endfor %}
+        </section>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div class="d-grid gap-4">
+          <section class="account-panel p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="account-panel-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/>
+                  <circle cx="12" cy="13" r="3.5"/>
+                </svg>
+              </span>
+              <div>
+                <p class="account-eyebrow text-uppercase small fw-semibold mb-1">Appearance</p>
+                <h2 class="h5 mb-0">Profile photo</h2>
+              </div>
+            </div>
+
+            <p class="text-secondary small">
+              Add a photo to make your account feel more personal.
+            </p>
+
+            <form method="post" enctype="multipart/form-data" data-account-row>
+              {% csrf_token %}
+              <input type="hidden" name="field" value="picture">
+              <label
+                class="form-label fw-semibold"
+                for="{{ picture_form.picture.id_for_label }}"
+              >
+                Choose an image
+              </label>
+              {{ picture_form.picture }}
+              {% for error in picture_form.picture.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-edit>
+                  Change photo
+                </button>
+                <button class="btn btn-sm btn-primary" type="submit" data-save hidden>
+                  Save photo
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  type="button"
+                  data-cancel
+                  hidden
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="account-panel p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="account-panel-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2"/>
+                  <path d="M3 10h18M7 15h3"/>
+                </svg>
+              </span>
+              <div>
+                <p class="account-eyebrow text-uppercase small fw-semibold mb-1">Billing</p>
+                <h2 class="h5 mb-0">Payment method</h2>
+              </div>
+            </div>
+
+            {% if profile.card_last4 %}
+              <div class="account-payment-card mb-3">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                  <span class="account-payment-label">Saved payment method</span>
+                  <span class="account-status">On file</span>
+                </div>
+                <span class="account-payment-chip" aria-hidden="true"></span>
+                <p class="account-payment-number mb-2">
+                  <span class="visually-hidden">Card ending in </span>
+                  &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;
+                  {{ profile.card_last4 }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <span class="account-payment-brand">{{ profile.card_brand|title }}</span>
+                  <span class="account-payment-wordmark">STRIPE</span>
+                </div>
+              </div>
+              <p class="account-payment-note text-secondary small mb-3">
+                Your full card details are securely managed by Stripe.
+              </p>
+            {% else %}
+              <div class="account-payment-empty mb-3">
+                <p class="fw-semibold mb-1">No card saved yet</p>
+                <p class="text-secondary small mb-0">
+                  Add a card for a quicker checkout. Saving it does not charge you.
+                </p>
+              </div>
+            {% endif %}
+
+            <a class="btn btn-primary w-100" href="{% url 'card_page' %}">
+              {% if profile.card_last4 %}Manage saved card{% else %}Add a card{% endif %}
+            </a>
+          </section>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </main>
 
   <script>
     document.querySelectorAll("[data-account-row]").forEach((row) => {

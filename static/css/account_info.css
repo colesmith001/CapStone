@@ -1,0 +1,283 @@
+.account-screen {
+  max-width: 70rem;
+}
+
+.account-hero {
+  overflow: hidden;
+  background: linear-gradient(120deg, #fffdf9 0%, #f7eddf 100%);
+  border: 1px solid var(--cafe-border);
+  border-top: 4px solid var(--cafe-caramel);
+  border-radius: 1rem;
+}
+
+.account-eyebrow {
+  color: var(--cafe-caramel);
+  letter-spacing: 0.12em;
+}
+
+.account-avatar {
+  display: grid;
+  flex: 0 0 4.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(145deg, var(--cafe-caramel), var(--cafe-coffee));
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0.25rem 0.8rem rgba(75, 48, 38, 0.16);
+  font-size: 1.5rem;
+  font-weight: 700;
+  object-fit: cover;
+}
+
+.account-panel {
+  height: 100%;
+  background: #fffdf9;
+  border: 1px solid var(--cafe-border);
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 1rem rgba(75, 48, 38, 0.06);
+}
+
+.account-field-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cafe-border);
+}
+
+.account-field-row:last-child {
+  border-bottom: 0;
+}
+
+.account-field-row input[readonly] {
+  background-color: #fbf7f0;
+}
+
+.account-panel-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 2.5rem;
+  place-items: center;
+  color: var(--cafe-caramel);
+  background-color: #f7eddf;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.account-panel-icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.account-status {
+  padding: 0.3rem 0.65rem;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.account-hero {
+  position: relative;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(154, 91, 53, 0.13), transparent 16rem),
+    linear-gradient(120deg, #fffdf9 0%, #f7eddf 100%);
+  box-shadow: 0 0.7rem 1.8rem rgba(75, 48, 38, 0.08);
+}
+
+.account-hero::after {
+  position: absolute;
+  right: -2.5rem;
+  bottom: -5rem;
+  width: 13rem;
+  height: 13rem;
+  border: 1px solid rgba(154, 91, 53, 0.15);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5rem rgba(154, 91, 53, 0.035), 0 0 0 3rem rgba(154, 91, 53, 0.025);
+  content: "";
+  pointer-events: none;
+}
+
+.account-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.account-hero-tag {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.75rem;
+  color: var(--cafe-coffee);
+  background: rgba(255, 253, 249, 0.8);
+  border: 1px solid var(--cafe-border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.account-avatar {
+  width: 5rem;
+  height: 5rem;
+  flex-basis: 5rem;
+  border-width: 4px;
+  box-shadow: 0 0.35rem 1rem rgba(75, 48, 38, 0.2);
+}
+
+.account-panel {
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.account-panel:hover {
+  border-color: #ddc4a8;
+  box-shadow: 0 0.65rem 1.6rem rgba(75, 48, 38, 0.09);
+}
+
+.account-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.account-panel-icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  flex-basis: 2.8rem;
+}
+
+.account-panel-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.account-field-row {
+  padding: 0.9rem 0.65rem;
+  border-radius: 0.7rem;
+  transition: background-color 150ms ease;
+}
+
+.account-field-row:hover {
+  background-color: #fbf7f0;
+}
+
+.account-field-row input[readonly] {
+  border-color: transparent;
+}
+
+.account-field-row input[readonly]:focus {
+  box-shadow: none;
+}
+
+.account-field-row .form-control:not([readonly]) {
+  background-color: #fff;
+}
+
+.account-field-row .btn {
+  min-width: 4.25rem;
+}
+
+.account-payment-card {
+  position: relative;
+  min-height: 11.5rem;
+  overflow: hidden;
+  padding: 1.2rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(240, 201, 158, 0.28), transparent 10rem),
+    linear-gradient(135deg, #33231b 0%, #6c4932 62%, #8a5d3b 100%);
+  border-radius: 0.9rem;
+  box-shadow: 0 0.5rem 1.2rem rgba(75, 48, 38, 0.18);
+}
+
+.account-payment-card::after {
+  position: absolute;
+  right: -3rem;
+  bottom: -5rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.4rem rgba(255, 255, 255, 0.025);
+  content: "";
+}
+
+.account-payment-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.account-payment-label {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.account-payment-chip {
+  display: block;
+  width: 2.25rem;
+  height: 1.6rem;
+  margin: 1rem 0 0.75rem;
+  background: linear-gradient(135deg, #edcf9f, #c99c62);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 0.3rem;
+}
+
+.account-payment-number {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.account-payment-brand {
+  font-weight: 700;
+}
+
+.account-payment-wordmark {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.account-payment-empty {
+  padding: 1.1rem;
+  background: #fbf7f0;
+  border: 1px dashed var(--cafe-border);
+  border-radius: 0.8rem;
+}
+
+.account-payment-note {
+  line-height: 1.5;
+}
+
+@media (max-width: 575.98px) {
+  .account-hero-tag {
+    align-self: flex-start;
+  }
+
+  .account-field-row {
+    padding-right: 0.35rem;
+    padding-left: 0.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-panel,
+  .account-field-row {
+    transition: none;
+  }
+}

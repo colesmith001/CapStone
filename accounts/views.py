@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 
-import logging 
+import logging
+import re
 import stripe
 
 from django.conf import settings
@@ -13,25 +14,23 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from .forms import AccountInfoForm, ProfilePictureForm
+from .forms import AccountInfoForm, ProfilePictureForm, SignupForm
 from .models import UserProfile
 
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 def signup_view(request):
-  form = UserCreationForm(
-    request.POST if request.method == 'POST' else None
-  )
+    form = SignupForm(
+        request.POST if request.method == "POST" else None
+    )
 
-  if request.method == 'POST' and form.is_valid():
-    user = form.save()
-    login(request, user)
-    return redirect('about')
+    if request.method == "POST" and form.is_valid():
+        user = form.save()
+        login(request, user)
+        return redirect("about")
 
-  return render(request, 'accounts/signup.html', {"form": form})
-
+    return render(request, "accounts/signup.html", {"form": form})
 
 @require_POST
 def logout_view(request: HttpRequest) -> HttpResponse:
@@ -88,11 +87,24 @@ logger = logging.getLogger(__name__)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
+def card_page(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    return render(
+        request,
+        "accounts/stripe.html",
+        {
+            "profile": profile,
+            "stripe_publishable_key": settings.STRIPE_PUBLISHABLE_KEY,
+        },
+    )
+
+@login_required
 @require_POST
 def create_setup_intent(request):
-    if not settings.STRIPE_SECRET_KEY:
+    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_PUBLISHABLE_KEY:
         return JsonResponse(
-            {"error": "Stripe card setup is unavailable because STRIPE_SECRET_KEY is not configured."},
+            {"error": "Stripe card setup is unavailable because its API keys are not configured."},
             status=503,
         )
 
@@ -109,13 +121,38 @@ def create_setup_intent(request):
 
         intent = stripe.SetupIntent.create(
             customer=profile.stripe_customer_id,
-            payment_method_types=["card"],
+            automatic_payment_methods={"enabled": True},
             usage="off_session",
         )
-    except stripe.StripeError:
-        logger.exception("could not start card setyp for user %s", request.user.pk)
-        return JsonResponse ({"error": "could not start card setup"}, status=502)
-    return JsonResponse({"client_secret": intent.client_secret})
+        return JsonResponse({"client_secret": intent.client_secret})
+    except stripe.StripeError as exc:
+        logger.exception("Could not start card setup for user %s", request.user.pk)
+        if settings.DEBUG:
+            error_details = [type(exc).__name__]
+            error_code = getattr(exc, "code", None)
+            error_param = getattr(exc, "param", None)
+            user_message = getattr(exc, "user_message", None)
+            if error_code:
+                error_details.append(f"code={error_code}")
+            if error_param:
+                error_details.append(f"param={error_param}")
+            if user_message:
+                user_message = re.sub(
+                    r"\b(?:sk|pk|rk)_(?:test|live)_[A-Za-z0-9]+\b",
+                    "[redacted key]",
+                    user_message,
+                )
+                user_message = re.sub(
+                    r"\b(?:cus|pm|seti)_[A-Za-z0-9]+\b",
+                    "[redacted Stripe ID]",
+                    user_message,
+                )
+                error_details.append(user_message)
+            return JsonResponse(
+                {"error": f"Stripe request failed: {', '.join(error_details)}"},
+                status=502,
+            )
+        return JsonResponse({"error": "could not start card setup"}, status=502)
 
 @csrf_exempt #Stripe cannot send Django's browser CSRF token; the signature verifies Stripe.
 @require_POST
@@ -136,15 +173,50 @@ def stripe_webhook(request):
     except ValueError:
         return HttpResponseBadRequest("Invalid webhook payload")
     except stripe.SignatureVerificationError:
-        return HttpResponseBadRequest("Inavlid webhook signature")
+        return HttpResponseBadRequest("Invalid webhook signature")
 
     # Ignore other event types; this endpoint only needs to handle completed card setup.
     if event["type"] != "setup_intent.succeeded":
         return HttpResponse(status=200)
 
     setup_intent = event["data"]["object"]
-    customer_id = setup_intent.get("customer")
-    payment_method_id = setup_intent.get("payment_method")
+    customer_id = getattr(setup_intent, "customer", None)
+    payment_method_id = getattr(setup_intent, "payment_method", None)
 
     if not customer_id or not payment_method_id:
-        return H
+        return HttpResponseBadRequest("SetupIntent is missing card details")
+
+    profile = UserProfile.objects.filter(
+        stripe_customer_id=customer_id
+    ).first()
+
+    if profile is None:
+        logger.error("No profile found for Stripe customer %s", customer_id)
+        return HttpResponse("profile not found for stripe customer", status=500)
+
+    try:
+        payment_method = stripe.PaymentMethod.retrieve(payment_method_id)
+    except stripe.StripeError:
+        logger.exception(
+            "Could not retrieve Stripe PaymentMethod %s",
+            payment_method_id,
+        )
+        return HttpResponse("Could not retrieve PaymentMethod.", status=502)
+
+    if payment_method.customer != customer_id:
+        return HttpResponseBadRequest("PaymentMethod does not belong to this customer.")
+
+    card = payment_method.card
+    if card is None:
+        return HttpResponseBadRequest("PaymentMethod does not contain card details.")
+
+    profile.default_payment_method_id = payment_method.id
+    profile.card_brand = card.brand
+    profile.card_last4 = card.last4
+    profile.save(update_fields=[
+        "default_payment_method_id",
+        "card_brand",
+        "card_last4",
+    ])
+
+    return HttpResponse(status=200)
