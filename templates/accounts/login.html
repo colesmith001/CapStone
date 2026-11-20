@@ -1,17 +1,85 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %} Log in {% endblock %}
+{% block title %}Log in{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Log in </h1>
+  <div class="login-shell">
+    <div class="login-card">
+      <section class="login-intro" aria-label="Welcome">
+        <div>
+          <div class="login-brand">
+            <span class="login-brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 8h12v7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z"/>
+                <path d="M17 10h1a3 3 0 1 1 0 6h-2M8 4c0 1 1 1 1 2M12 3c0 1 1 1 1 2"/>
+              </svg>
+            </span>
+            <span>Sterling's Coffee Oasis</span>
+          </div>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button class="btn btn-primary" type="submit">Log in</button>
-</form>
+          <p class="login-kicker">YOUR TABLE IS WAITING</p>
+          <h1>Good to have you back.</h1>
+          <p class="login-intro-copy">
+            Sign in to pick up where you left off and enjoy a smoother visit.
+          </p>
+        </div>
 
-<p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+        <div class="login-welcome-note">
+          <span class="login-welcome-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
+            </svg>
+          </span>
+          <span>A little comfort, whenever you need it.</span>
+        </div>
+      </section>
 
-<p>Dont have an account? <a href="{% url 'signup' %}">Sign up </a></p>
+      <section class="login-form-panel">
+        <span class="login-step">MEMBER SIGN IN</span>
+        <h2>Welcome back</h2>
+        <p class="login-description">Enter your details to log in to your account.</p>
+
+        <form method="post" class="login-form">
+          {% csrf_token %}
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% endif %}
+
+          {% for field in form %}
+            <div class="login-field">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}
+                <p class="login-error" role="alert">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          {% for error in form.non_field_errors %}
+            <p class="login-error login-form-error" role="alert">{{ error }}</p>
+          {% endfor %}
+
+          <div class="login-options">
+            <a href="{% url 'password_reset' %}">Forgot your password?</a>
+          </div>
+
+          <button class="login-submit" type="submit">
+            <span>Log in</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </form>
+
+        <p class="login-signup">
+          New to Sterling's? <a href="{% url 'signup' %}">Create an account</a>
+        </p>
+      </section>
+    </div>
+  </div>
 {% endblock %}

@@ -108,6 +108,44 @@
             <div class="d-flex align-items-center gap-3 mb-3">
               <span class="account-panel-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
+                  <rect x="4" y="10" width="16" height="11" rx="2"/>
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>
+                </svg>
+              </span>
+              <div>
+                <p class="account-eyebrow text-uppercase small fw-semibold mb-1">Security</p>
+                <h2 class="h5 mb-0">Change password</h2>
+              </div>
+            </div>
+
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="field" value="password">
+              {% for field in password_form %}
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                  </label>
+                  {{ field }}
+                  {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+              {% for error in password_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">{{ error }}</div>
+              {% endfor %}
+              <button class="btn btn-primary w-100" type="submit">Update password</button>
+            </form>
+          </section>
+
+          <section class="account-panel p-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="account-panel-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
                   <path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/>
                   <circle cx="12" cy="13" r="3.5"/>
                 </svg>

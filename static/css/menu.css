@@ -325,6 +325,10 @@
     border-radius: 1rem;
   }
 
+  .menu-hero h1 {
+    font-size: clamp(2.35rem, 11vw, 3.5rem);
+  }
+
   .menu-hero-note {
     display: none;
   }
@@ -339,6 +343,50 @@
 
   .menu-section-heading {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .menu-page {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  .menu-hero {
+    padding: 1.5rem;
+  }
+
+  .menu-hero-description {
+    font-size: 1rem;
+  }
+
+  .menu-search-panel {
+    padding: 1rem;
+  }
+
+  .menu-search-controls .btn {
+    width: 100%;
+  }
+
+  .menu-section-heading {
+    align-items: center;
+  }
+
+  .menu-section-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-card-title-row {
+    gap: 0.5rem;
+  }
+
+  .menu-card-description {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 }
 

@@ -1,59 +1,87 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Create Account{% endblock %}
+{% block title %}Create your account{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
 
 {% block content %}
-<section class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4 p-md-5">
-          <header class="mb-4 text-center">
-            <p class="text-uppercase text-secondary small fw-semibold mb-2">
-              Welcome
-            </p>
-            <h1 class="h2 mb-2">Create your account</h1>
-            <p class="text-secondary mb-0">
-              Sign up to get started.
-            </p>
-          </header>
+  <div class="signup-shell">
+    <div class="signup-card">
+      <section class="signup-intro" aria-label="Create an account">
+        <div>
+          <div class="signup-brand">
+            <span class="signup-brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20c-4.4 0-7-2.7-7-6.5C5 9.2 8.1 5.7 16.5 4c.1 7.8-1.6 16-4.5 16Z"/>
+                <path d="M7.5 17c1.7-3.1 4.2-5.7 7.5-8"/>
+              </svg>
+            </span>
+            <span>Sterling's Coffee Oasis</span>
+          </div>
 
-          <form method="post">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger" role="alert">
-                {{ form.non_field_errors }}
-              </div>
-            {% endif %}
-
-            {% for field in form %}
-              <div class="mb-3">
-                <label class="form-label fw-semibold" for="{{ field.id_for_label }}">
-                  {{ field.label }}
-                </label>
-                {{ field }}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text|safe }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            {% endfor %}
-
-            <button class="btn btn-primary w-100 py-2 mt-2" type="submit">
-              Create account
-            </button>
-          </form>
-
-          <p class="text-center text-secondary mt-4 mb-0">
-            Already have an account?
-            <a href="{% url 'login' %}" class="fw-semibold">Log in</a>
+          <p class="signup-kicker">A WARMER WAY TO COME BACK</p>
+          <h1>Make yourself at home.</h1>
+          <p class="signup-intro-copy">
+            Create an account to keep your profile and favorite ways to pay close at hand.
           </p>
         </div>
-      </div>
+
+        <ul class="signup-benefits">
+          <li>
+            <span aria-hidden="true">01</span>
+            Keep your account details together
+          </li>
+          <li>
+            <span aria-hidden="true">02</span>
+            Manage your profile whenever you like
+          </li>
+        </ul>
+      </section>
+
+      <section class="signup-form-panel">
+        <span class="signup-step">CREATE AN ACCOUNT</span>
+        <h2>Join us</h2>
+        <p class="signup-description">A few details and you’ll be ready to go.</p>
+
+        <form method="post" class="signup-form">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="signup-error-summary" role="alert">
+              {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% for field in form %}
+            <div class="signup-field">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <div class="signup-help">{{ field.help_text }}</div>
+              {% endif %}
+              {% for error in field.errors %}
+                <p class="signup-error" role="alert">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <button class="signup-submit" type="submit">
+            <span>Create account</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </form>
+
+        <p class="signup-login">
+          Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </p>
+      </section>
     </div>
   </div>
-</section>
 {% endblock %}

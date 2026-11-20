@@ -2,6 +2,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 import stripe
@@ -33,6 +34,39 @@ class AccountInfoViewTests(TestCase):
         self.assertEqual(self.user.last_name, "Customer")
         self.assertEqual(self.user.email, "customer@example.com")
 
+    def test_password_can_be_changed_without_logging_out(self):
+        response = self.client.post(
+            reverse("account_info"),
+            {
+                "field": "password",
+                "old_password": "test-password",
+                "new_password1": "Better-test-password-2026!",
+                "new_password2": "Better-test-password-2026!",
+            },
+        )
+
+        self.assertRedirects(response, reverse("account_info"))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("Better-test-password-2026!"))
+        self.assertTrue(self.client.session.get("_auth_user_id"))
+        self.assertContains(self.client.get(reverse("account_info")), "Change password")
+
+    def test_password_change_rejects_an_incorrect_current_password(self):
+        response = self.client.post(
+            reverse("account_info"),
+            {
+                "field": "password",
+                "old_password": "incorrect-password",
+                "new_password1": "Better-test-password-2026!",
+                "new_password2": "Better-test-password-2026!",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("old_password", response.context["password_form"].errors)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("test-password"))
+
     def test_account_page_shows_card_status_and_manage_link(self):
         profile = UserProfile.objects.get(user=self.user)
         profile.card_brand = "visa"
@@ -44,6 +78,58 @@ class AccountInfoViewTests(TestCase):
         self.assertContains(response, "Visa")
         self.assertContains(response, "4242")
         self.assertContains(response, reverse("card_page"))
+
+
+class LoginPageTests(TestCase):
+    def test_login_page_keeps_password_reset_and_next_links(self):
+        response = self.client.get(
+            reverse("login"),
+            {"next": reverse("account_info")},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, reverse("password_reset"))
+        self.assertContains(response, 'name="next"')
+        self.assertContains(response, reverse("account_info"))
+
+
+class SignupPageTests(TestCase):
+    def test_signup_page_shows_signup_fields_and_login_link(self):
+        response = self.client.get(reverse("signup"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="username"')
+        self.assertContains(response, 'name="email"')
+        self.assertContains(response, 'name="password1"')
+        self.assertContains(response, reverse("login"))
+
+
+class PasswordResetEmailTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="reset-customer",
+            password="test-password",
+            email="reset-customer@example.com",
+        )
+
+    def test_password_reset_email_includes_html_button_and_text_fallback(self):
+        with self.settings(
+            EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
+        ):
+            response = self.client.post(
+                reverse("password_reset"),
+                {"email": self.user.email},
+            )
+
+        self.assertRedirects(response, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn("choose a new password", message.body)
+        self.assertEqual(len(message.alternatives), 1)
+        html_body, content_type = message.alternatives[0]
+        self.assertEqual(content_type, "text/html")
+        self.assertIn(">Reset password</a>", html_body)
+        self.assertIn("/accounts/reset/", html_body)
 
 
 class StripeCardSetupTests(TestCase):

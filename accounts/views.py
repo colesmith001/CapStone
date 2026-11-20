@@ -9,7 +9,9 @@ from django.http import JsonResponse
 
 
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -42,11 +44,20 @@ def logout_view(request: HttpRequest) -> HttpResponse:
 def account_info_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     account_form = AccountInfoForm(instance=request.user)
+    password_form = PasswordChangeForm(user=request.user)
+    picture_form = ProfilePictureForm(instance=profile)
 
     if request.method == "POST":
         field_name = request.POST.get("field")
 
-        if field_name == "picture":
+        if field_name == "password":
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Your password was changed.")
+                return redirect("account_info")
+        elif field_name == "picture":
             picture_form = ProfilePictureForm(
                 request.POST,
                 request.FILES,
@@ -76,11 +87,22 @@ def account_info_view(request):
         field.widget.attrs.setdefault("class", "form-control")
     picture_form.fields["picture"].widget.attrs["disabled"] = True
     picture_form.fields["picture"].widget.attrs.setdefault("class", "form-control")
+    for field_name, field in password_form.fields.items():
+        field.widget.attrs.setdefault("class", "form-control")
+        field.widget.attrs.setdefault(
+            "autocomplete",
+            "current-password" if field_name == "old_password" else "new-password",
+        )
 
     return render(
         request,
         "accounts/account_info.html",
-        {"form": account_form, "picture_form": picture_form, "profile": profile},
+        {
+            "form": account_form,
+            "password_form": password_form,
+            "picture_form": picture_form,
+            "profile": profile,
+        },
     )
 
 logger = logging.getLogger(__name__)
